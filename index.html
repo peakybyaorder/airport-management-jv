@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机场管理菊 - TikTok网络解决方案专家</title>
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff00ff;
+            --neon-purple: #9d00ff;
+            --neon-green: #00ff9d;
+            --dark-bg: #0a0a12;
+            --card-bg: rgba(16, 16, 32, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            background-image: 
+                linear-gradient(rgba(10, 10, 18, 0.9), rgba(10, 10, 18, 0.9)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23111" stroke-width="0.5"/></svg>');
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(10, 10, 18, 0.7), rgba(10, 10, 18, 0.7)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23111" stroke-width="0.5"/></svg>');
+            z-index: -1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 240, 252, 0.3);
+            background-color: rgba(10, 10, 18, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 240, 252, 0.5);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            transition: all 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--neon-pink);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .contact-banner {
+            background: linear-gradient(90deg, rgba(0, 240, 252, 0.1), rgba(255, 0, 255, 0.1));
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid var(--neon-pink);
+            border-bottom: 1px solid var(--neon-pink);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-purple);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.3);
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--neon-blue);
+        }
+
+        .product-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .option-group {
+            margin-bottom: 1rem;
+        }
+
+        .option-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--neon-pink);
+        }
+
+        .option-select, .option-input {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-purple);
+            border-radius: 5px;
+            color: var(--text-primary);
+        }
+
+        .price-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            color: var(--neon-blue);
+            text-align: center;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .add-to-cart-btn, .checkout-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(45deg, var(--neon-green), #00cc7a);
+            color: var(--dark-bg);
+        }
+
+        .checkout-btn {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            color: var(--dark-bg);
+        }
+
+        .add-to-cart-btn:hover, .checkout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 240, 252, 0.5);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 240, 252, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--neon-pink);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            margin: 1.5rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: bold;
+            color: var(--neon-blue);
+        }
+
+        .cart-item-details {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            color: var(--neon-green);
+            margin: 0 1rem;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: var(--neon-pink);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: var(--neon-pink);
+        }
+
+        .order-summary {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .order-detail {
+            margin-bottom: 0.5rem;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-purple);
+            border-radius: 5px;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .language-toggle {
+            background: none;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-toggle:hover {
+            background: rgba(0, 240, 252, 0.1);
+        }
+
+        .payment-page {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .qr-code {
+            max-width: 200px;
+            margin: 1rem auto;
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 10px;
+            background: white;
+        }
+
+        .order-number {
+            font-size: 1.2rem;
+            color: var(--neon-pink);
+            margin: 1rem 0;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+
+        .glitch-effect {
+            animation: glitch 1s linear infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    
+    <header class="header">
+        <div class="logo">机场管理菊</div>
+        <div class="header-controls">
+            <div class="cart-icon" id="cartIcon">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+            <button class="language-toggle" id="languageToggle">EN</button>
+        </div>
+    </header>
+
+    <div class="contact-banner">
+        点击结算后可看到我的联系方式，请扫描二维码加我电报哦
+    </div>
+
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 2rem; color: var(--neon-blue);">TikTok网络解决方案专家</h1>
+        
+        <div class="products-grid">
+            <!-- TikTok直播专线产品 -->
+            <div class="product-card">
+                <h2 class="product-title">TikTok直播专线</h2>
+                <p class="product-description">住宅双ISP美国网络提供商，稳定高速的直播网络解决方案</p>
+                
+                <div class="option-group">
+                    <label class="option-label">网速选择</label>
+                    <select class="option-select" id="liveSpeed">
+                        <option value="500">500M以内 - 99元/月</option>
+                        <option value="1000">500M-1000M - 149元/月</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">购买时长</label>
+                    <select class="option-select" id="liveMonths">
+                        <option value="1">1个月</option>
+                        <option value="3">3个月</option>
+                        <option value="6">6个月</option>
+                        <option value="12">12个月</option>
+                    </select>
+                </div>
+                
+                <div class="price-display" id="livePrice">单价: 99元/月</div>
+                <div class="product-actions">
+                    <button class="add-to-cart-btn" data-product="live">加入购物车</button>
+                    <button class="checkout-btn" data-product="live">直接购买</button>
+                </div>
+            </div>
+            
+            <!-- TikTok视频运营网络产品 -->
+            <div class="product-card">
+                <h2 class="product-title">TikTok视频运营网络100+节点</h2>
+                <p class="product-description">住宅三ISP美国网络提供商，多国家节点选择</p>
+                
+                <div class="option-group">
+                    <label class="option-label">国家选择</label>
+                    <select class="option-select" id="videoCountry">
+                        <option value="US">美国</option>
+                        <option value="UK">英国</option>
+                        <option value="DE">德国</option>
+                        <option value="FR">法国</option>
+                        <option value="JP">日本</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">节点数量</label>
+                    <select class="option-select" id="videoNodes">
+                        <option value="10">10条节点 - 59.99元/月</option>
+                        <option value="20">20条节点 - 79.99元/月</option>
+                        <option value="50">50条节点 - 150.99元/月</option>
+                        <option value="100">100+条节点 - 249.99元起/月</option>
+                    </select>
+                </div>
+                
+                <div class="option-group" id="extraNodesGroup" style="display: none;">
+                    <label class="option-label">额外节点数量 (超过100条，每条2元)</label>
+                    <input type="number" class="option-input" id="extraNodes" min="0" value="0">
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">购买时长</label>
+                    <select class="option-select" id="videoMonths">
+                        <option value="1">1个月</option>
+                        <option value="3">3个月</option>
+                        <option value="6">6个月</option>
+                        <option value="12">12个月</option>
+                    </select>
+                </div>
+                
+                <div class="price-display" id="videoPrice">单价: 59.99元/月</div>
+                <div class="product-actions">
+                    <button class="add-to-cart-btn" data-product="video">加入购物车</button>
+                    <button class="checkout-btn" data-product="video">直接购买</button>
+                </div>
+            </div>
+            
+            <!-- 代采专项网络节点产品 -->
+            <div class="product-card">
+                <h2 class="product-title">代采专项网络节点100+</h2>
+                <p class="product-description">住宅三ISP美国网络提供商，多国家节点选择</p>
+                
+                <div class="option-group">
+                    <label class="option-label">国家选择</label>
+                    <select class="option-select" id="proxyCountry">
+                        <option value="US">美国</option>
+                        <option value="UK">英国</option>
+                        <option value="DE">德国</option>
+                        <option value="FR">法国</option>
+                        <option value="JP">日本</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">节点数量</label>
+                    <select class="option-select" id="proxyNodes">
+                        <option value="10">10条节点 - 59.99元/月</option>
+                        <option value="20">20条节点 - 79.99元/月</option>
+                        <option value="50">50条节点 - 150.99元/月</option>
+                        <option value="100">100+条节点 - 249.99元起/月</option>
+                    </select>
+                </div>
+                
+                <div class="option-group" id="proxyExtraNodesGroup" style="display: none;">
+                    <label class="option-label">额外节点数量 (超过100条，每条2元)</label>
+                    <input type="number" class="option-input" id="proxyExtraNodes" min="0" value="0">
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">购买时长</label>
+                    <select class="option-select" id="proxyMonths">
+                        <option value="1">1个月</option>
+                        <option value="3">3个月</option>
+                        <option value="6">6个月</option>
+                        <option value="12">12个月</option>
+                    </select>
+                </div>
+                
+                <div class="price-display" id="proxyPrice">单价: 59.99元/月</div>
+                <div class="product-actions">
+                    <button class="add-to-cart-btn" data-product="proxy">加入购物车</button>
+                    <button class="checkout-btn" data-product="proxy">直接购买</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 购物车弹窗 -->
+    <div class="modal-overlay" id="cartModal" style="display: none;">
+        <div class="modal-content">
+            <button class="close-btn" id="closeCart">&times;</button>
+            <h2 style="color: var(--neon-green); margin-bottom: 1rem;">购物车</h2>
+            
+            <div class="cart-items" id="cartItems">
+                <!-- 购物车内容将通过JavaScript动态填充 -->
+                <div class="empty-cart">购物车为空</div>
+            </div>
+            
+            <div class="cart-total" id="cartTotal">总计: 0元</div>
+            
+            <button class="confirm-btn" id="checkoutCart">结算购物车</button>
+        </div>
+    </div>
+
+    <!-- 结算弹窗 -->
+    <div class="modal-overlay" id="checkoutModal" style="display: none;">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <h2 style="color: var(--neon-blue); margin-bottom: 1rem;">订单确认</h2>
+            
+            <div class="order-summary" id="orderSummary">
+                <!-- 订单详情将通过JavaScript动态填充 -->
+            </div>
+            
+            <div class="option-group">
+                <label class="option-label">收货邮箱</label>
+                <input type="email" class="email-input" id="customerEmail" placeholder="请输入您的邮箱地址">
+            </div>
+            
+            <button class="confirm-btn" id="confirmOrder">确认订单</button>
+        </div>
+    </div>
+
+    <!-- 支付页面 -->
+    <div class="modal-overlay" id="paymentPage" style="display: none;">
+        <div class="modal-content">
+            <h2 style="color: var(--neon-pink); margin-bottom: 1rem;">支付订单</h2>
+            
+            <div class="order-number" id="paymentOrderNumber">订单号: 202305150001</div>
+            
+            <p style="margin-bottom: 1rem;">请扫描下方支付宝二维码完成支付</p>
+            <div class="qr-code">
+                <img src="/支付宝收款码.jpg" alt="支付宝收款码" style="width: 100%;">
+            </div>
+            
+            <p style="margin: 1rem 0; font-size: 0.9rem;">支付时请备注您的邮箱地址，以便我们确认订单</p>
+            
+            <p style="margin: 1.5rem 0;">如有问题，请扫描下方二维码联系客服</p>
+            <div class="qr-code">
+                <img src="/电报.PNG" alt="电报联系方式" style="width: 100%;">
+            </div>
+            
+            <button class="confirm-btn" id="backToHome" style="margin-top: 1.5rem;">返回首页</button>
+        </div>
+    </div>
+
+    <script>
+        // 多语言支持
+        const translations = {
+            'zh': {
+                'title': '机场管理菊 - TikTok网络解决方案专家',
+                'contactBanner': '点击结算后可看到我的联系方式，请扫描二维码加我电报哦',
+                'liveTitle': 'TikTok直播专线',
+                'liveDesc': '住宅双ISP美国网络提供商，稳定高速的直播网络解决方案',
+                'videoTitle': 'TikTok视频运营网络100+节点',
+                'videoDesc': '住宅三ISP美国网络提供商，多国家节点选择',
+                'proxyTitle': '代采专项网络节点100+',
+                'proxyDesc': '住宅三ISP美国网络提供商，多国家节点选择',
+                'speedOption': '网速选择',
+                'countryOption': '国家选择',
+                'nodesOption': '节点数量',
+                'durationOption': '购买时长',
+                'extraNodes': '额外节点数量 (超过100条，每条2元)',
+                'unitPrice': '单价',
+                'addToCart': '加入购物车',
+                'buyNow': '直接购买',
+                'cart': '购物车',
+                'emptyCart': '购物车为空',
+                'total': '总计',
+                'checkoutCart': '结算购物车',
+                'orderConfirm': '订单确认',
+                'orderSummary': '订单摘要',
+                'emailLabel': '收货邮箱',
+                'emailPlaceholder': '请输入您的邮箱地址',
+                'confirmOrder': '确认订单',
+                'paymentTitle': '支付订单',
+                'paymentInstruction': '请扫描下方支付宝二维码完成支付',
+                'paymentNote': '支付时请备注您的邮箱地址，以便我们确认订单',
+                'contactSupport': '如有问题，请扫描下方二维码联系客服',
+                'backToHome': '返回首页'
+            },
+            'en': {
+                'title': 'Airport Management Bureau - TikTok Network Solutions Expert',
+                'contactBanner': 'Click checkout to see contact information, please scan QR code to contact me on Telegram',
+                'liveTitle': 'TikTok Live Streaming Line',
+                'liveDesc': 'Residential dual ISP US network provider, stable and high-speed live streaming solution',
+                'videoTitle': 'TikTok Video Operation Network 100+ Nodes',
+                'videoDesc': 'Residential triple ISP US network provider, multiple country node options',
+                'proxyTitle': 'Custom Network Nodes Procurement 100+',
+                'proxyDesc': 'Residential triple ISP US network provider, multiple country node options',
+                'speedOption': 'Speed Option',
+                'countryOption': 'Country Selection',
+                'nodesOption': 'Number of Nodes',
+                'durationOption': 'Purchase Duration',
+                'extraNodes': 'Extra Nodes (2 yuan each for over 100 nodes)',
+                'unitPrice': 'Unit Price',
+                'addToCart': 'Add to Cart',
+                'buyNow': 'Buy Now',
+                'cart': 'Shopping Cart',
+                'emptyCart': 'Cart is empty',
+                'total': 'Total',
+                'checkoutCart': 'Checkout Cart',
+                'orderConfirm': 'Order Confirmation',
+                'orderSummary': 'Order Summary',
+                'emailLabel': 'Delivery Email',
+                'emailPlaceholder': 'Please enter your email address',
+                'confirmOrder': 'Confirm Order',
+                'paymentTitle': 'Payment',
+                'paymentInstruction': 'Please scan the Alipay QR code below to complete payment',
+                'paymentNote': 'Please include your email address in the payment notes for order confirmation',
+                'contactSupport': 'If you have any questions, please scan the QR code below to contact customer service',
+                'backToHome': 'Back to Home'
+            }
+        };
+
+        let currentLang = 'zh';
+        let shoppingCart = [];
+        
+        // 价格计算函数
+        function calculateLivePrice() {
+            const speed = document.getElementById('liveSpeed').value;
+            const months = parseInt(document.getElementById('liveMonths').value);
+            
+            let basePrice = speed === '500' ? 99 : 149;
+            let totalPrice = basePrice * months;
+            
+            document.getElementById('livePrice').textContent = `${translations[currentLang].unitPrice}: ${totalPrice}元`;
+            return totalPrice;
+        }
+        
+        function calculateVideoPrice() {
+            const nodes = parseInt(document.getElementById('videoNodes').value);
+            const months = parseInt(document.getElementById('videoMonths').value);
+            let extraNodes = 0;
+            
+            if (nodes === 100) {
+                extraNodes = parseInt(document.getElementById('extraNodes').value) || 0;
+            }
+            
+            let basePrice;
+            if (nodes === 10) basePrice = 59.99;
+            else if (nodes === 20) basePrice = 79.99;
+            else if (nodes === 50) basePrice = 150.99;
+            else basePrice = 249.99 + (extraNodes * 2);
+            
+            let totalPrice = basePrice * months;
+            
+            document.getElementById('videoPrice').textContent = `${translations[currentLang].unitPrice}: ${totalPrice.toFixed(2)}元`;
+            return totalPrice;
+        }
+        
+        function calculateProxyPrice() {
+            const nodes = parseInt(document.getElementById('proxyNodes').value);
+            const months = parseInt(document.getElementById('proxyMonths').value);
+            let extraNodes = 0;
+            
+            if (nodes === 100) {
+                extraNodes = parseInt(document.getElementById('proxyExtraNodes').value) || 0;
+            }
+            
+            let basePrice;
+            if (nodes === 10) basePrice = 59.99;
+            else if (nodes === 20) basePrice = 79.99;
+            else if (nodes === 50) basePrice = 150.99;
+            else basePrice = 249.99 + (extraNodes * 2);
+            
+            let totalPrice = basePrice * months;
+            
+            document.getElementById('proxyPrice').textContent = `${translations[currentLang].unitPrice}: ${totalPrice.toFixed(2)}元`;
+            return totalPrice;
+        }
+        
+        // 切换语言
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            document.getElementById('languageToggle').textContent = currentLang === 'zh' ? 'EN' : '中文';
+            applyTranslations();
+            updateCartDisplay();
+        }
+        
+        // 应用翻译
+        function applyTranslations() {
+            document.title = translations[currentLang].title;
+            document.querySelector('.contact-banner').textContent = translations[currentLang].contactBanner;
+            
+            // 更新产品标题和描述
+            document.querySelectorAll('.product-title')[0].textContent = translations[currentLang].liveTitle;
+            document.querySelectorAll('.product-description')[0].textContent = translations[currentLang].liveDesc;
+            document.querySelectorAll('.product-title')[1].textContent = translations[currentLang].videoTitle;
+            document.querySelectorAll('.product-description')[1].textContent = translations[currentLang].videoDesc;
+            document.querySelectorAll('.product-title')[2].textContent = translations[currentLang].proxyTitle;
+            document.querySelectorAll('.product-description')[2].textContent = translations[currentLang].proxyDesc;
+            
+            // 更新选项标签
+            document.querySelectorAll('.option-label')[0].textContent = translations[currentLang].speedOption;
+            document.querySelectorAll('.option-label')[2].textContent = translations[currentLang].countryOption;
+            document.querySelectorAll('.option-label')[3].textContent = translations[currentLang].nodesOption;
+            document.querySelectorAll('.option-label')[6].textContent = translations[currentLang].countryOption;
+            document.querySelectorAll('.option-label')[7].textContent = translations[currentLang].nodesOption;
+            
+            // 更新按钮文本
+            document.querySelectorAll('.add-to-cart-btn')[0].textContent = translations[currentLang].addToCart;
+            document.querySelectorAll('.checkout-btn')[0].textContent = translations[currentLang].buyNow;
+            document.querySelectorAll('.add-to-cart-btn')[1].textContent = translations[currentLang].addToCart;
+            document.querySelectorAll('.checkout-btn')[1].textContent = translations[currentLang].buyNow;
+            document.querySelectorAll('.add-to-cart-btn')[2].textContent = translations[currentLang].addToCart;
+            document.querySelectorAll('.checkout-btn')[2].textContent = translations[currentLang].buyNow;
+            
+            // 更新弹窗内容
+            document.querySelector('#cartModal h2').textContent = translations[currentLang].cart;
+            document.getElementById('checkoutCart').textContent = translations[currentLang].checkoutCart;
+            
+            document.querySelector('#checkoutModal h2').textContent = translations[currentLang].orderConfirm;
+            document.querySelector('#checkoutModal .option-label').textContent = translations[currentLang].emailLabel;
+            document.getElementById('customerEmail').placeholder = translations[currentLang].emailPlaceholder;
+            document.getElementById('confirmOrder').textContent = translations[currentLang].confirmOrder;
+            
+            // 更新支付页面
+            document.querySelector('#paymentPage h2').textContent = translations[currentLang].paymentTitle;
+            document.querySelector('#paymentPage p:nth-of-type(1)').textContent = translations[currentLang].paymentInstruction;
+            document.querySelector('#paymentPage p:nth-of-type(2)').textContent = translations[currentLang].paymentNote;
+            document.querySelector('#paymentPage p:nth-of-type(3)').textContent = translations[currentLang].contactSupport;
+            document.getElementById('backToHome').textContent = translations[currentLang].backToHome;
+            
+            // 重新计算价格显示
+            calculateLivePrice();
+            calculateVideoPrice();
+            calculateProxyPrice();
+        }
+        
+        // 生成订单号
+        function generateOrderNumber() {
+            const now = new Date();
+            const timestamp = now.getFullYear().toString() + 
+                             (now.getMonth()+1).toString().padStart(2, '0') + 
+                             now.getDate().toString().padStart(2, '0') + 
+                             now.getHours().toString().padStart(2, '0') + 
+                             now.getMinutes().toString().padStart(2, '0') + 
+                             now.getSeconds().toString().padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return timestamp + random;
+        }
+        
+        // 发送邮件
+        function sendEmail(orderDetails) {
+            // 使用EmailJS发送邮件
+            emailjs.init("Xtlfnvhw3-KasIRGq"); // 你的Public Key
+            
+            const templateParams = {
+                to_email: "peakybyaorder@gmail.com",
+                from_email: orderDetails.email,
+                order_number: orderDetails.orderNumber,
+                product: orderDetails.product,
+                configuration: orderDetails.configuration,
+                total_price: orderDetails.totalPrice + "元"
+            };
+            
+            emailjs.send("service_ps00mka", "template_kzaa56s", templateParams)
+                .then(function(response) {
+                    console.log("邮件发送成功", response.status, response.text);
+                }, function(error) {
+                    console.log("邮件发送失败", error);
+                    // 即使邮件发送失败，也继续支付流程
+                });
+        }
+        
+        // 更新购物车显示
+        function updateCartDisplay() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            cartCount.textContent = shoppingCart.length;
+            
+            if (shoppingCart.length === 0) {
+                cartItems.innerHTML = `<div class="empty-cart">${translations[currentLang].emptyCart}</div>`;
+                cartTotal.textContent = `${translations[currentLang].total}: 0元`;
+                return;
+            }
+            
+            let itemsHTML = '';
+            let total = 0;
+            
+            shoppingCart.forEach((item, index) => {
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-details">${item.configuration}</div>
+                        </div>
+                        <div class="cart-item-price">${item.price}元</div>
+                        <button class="remove-item" data-index="${index}">×</button>
+                    </div>
+                `;
+                total += item.price;
+            });
+            
+            cartItems.innerHTML = itemsHTML;
+            cartTotal.textContent = `${translations[currentLang].total}: ${total.toFixed(2)}元`;
+            
+            // 添加删除按钮事件
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    shoppingCart.splice(index, 1);
+                    updateCartDisplay();
+                });
+            });
+        }
+        
+        // 添加商品到购物车
+        function addToCart(productType) {
+            let productName, configuration, price;
+            
+            if (productType === 'live') {
+                productName = translations[currentLang].liveTitle;
+                const speed = document.getElementById('liveSpeed').value === '500' ? '500M以内' : '500M-1000M';
+                const months = document.getElementById('liveMonths').value;
+                configuration = `网速: ${speed}, 时长: ${months}个月`;
+                price = calculateLivePrice();
+            } else if (productType === 'video') {
+                productName = translations[currentLang].videoTitle;
+                const country = document.getElementById('videoCountry').options[document.getElementById('videoCountry').selectedIndex].text;
+                const nodes = document.getElementById('videoNodes').value;
+                const extraNodes = nodes === '100' ? document.getElementById('extraNodes').value : 0;
+                const months = document.getElementById('videoMonths').value;
+                configuration = `国家: ${country}, 节点: ${nodes}条${extraNodes > 0 ? ` (额外${extraNodes}条)` : ''}, 时长: ${months}个月`;
+                price = calculateVideoPrice();
+            } else if (productType === 'proxy') {
+                productName = translations[currentLang].proxyTitle;
+                const country = document.getElementById('proxyCountry').options[document.getElementById('proxyCountry').selectedIndex].text;
+                const nodes = document.getElementById('proxyNodes').value;
+                const extraNodes = nodes === '100' ? document.getElementById('proxyExtraNodes').value : 0;
+                const months = document.getElementById('proxyMonths').value;
+                configuration = `国家: ${country}, 节点: ${nodes}条${extraNodes > 0 ? ` (额外${extraNodes}条)` : ''}, 时长: ${months}个月`;
+                price = calculateProxyPrice();
+            }
+            
+            shoppingCart.push({
+                name: productName,
+                configuration: configuration,
+                price: price,
+                type: productType
+            });
+            
+            updateCartDisplay();
+            
+            // 显示添加成功提示
+            const cartIcon = document.getElementById('cartIcon');
+            cartIcon.classList.add('glitch-effect');
+            setTimeout(() => {
+                cartIcon.classList.remove('glitch-effect');
+            }, 1000);
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化价格计算
+            calculateLivePrice();
+            calculateVideoPrice();
+            calculateProxyPrice();
+            
+            // 事件监听器
+            document.getElementById('liveSpeed').addEventListener('change', calculateLivePrice);
+            document.getElementById('liveMonths').addEventListener('change', calculateLivePrice);
+            
+            document.getElementById('videoCountry').addEventListener('change', calculateVideoPrice);
+            document.getElementById('videoNodes').addEventListener('change', function() {
+                const nodes = parseInt(this.value);
+                document.getElementById('extraNodesGroup').style.display = nodes === 100 ? 'block' : 'none';
+                calculateVideoPrice();
+            });
+            document.getElementById('extraNodes').addEventListener('input', calculateVideoPrice);
+            document.getElementById('videoMonths').addEventListener('change', calculateVideoPrice);
+            
+            document.getElementById('proxyCountry').addEventListener('change', calculateProxyPrice);
+            document.getElementById('proxyNodes').addEventListener('change', function() {
+                const nodes = parseInt(this.value);
+                document.getElementById('proxyExtraNodesGroup').style.display = nodes === 100 ? 'block' : 'none';
+                calculateProxyPrice();
+            });
+            document.getElementById('proxyExtraNodes').addEventListener('input', calculateProxyPrice);
+            document.getElementById('proxyMonths').addEventListener('change', calculateProxyPrice);
+            
+            // 加入购物车按钮
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productType = this.getAttribute('data-product');
+                    addToCart(productType);
+                });
+            });
+            
+            // 直接购买按钮
+            document.querySelectorAll('.checkout-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productType = this.getAttribute('data-product');
+                    addToCart(productType);
+                    document.getElementById('cartModal').style.display = 'none';
+                    checkoutCart();
+                });
+            });
+            
+            // 购物车图标点击
+            document.getElementById('cartIcon').addEventListener('click', function() {
+                document.getElementById('cartModal').style.display = 'flex';
+            });
+            
+            // 关闭购物车
+            document.getElementById('closeCart').addEventListener('click', function() {
+                document.getElementById('cartModal').style.display = 'none';
+            });
+            
+            // 结算购物车
+            document.getElementById('checkoutCart').addEventListener('click', function() {
+                if (shoppingCart.length === 0) {
+                    alert('购物车为空，请先添加商品');
+                    return;
+                }
+                document.getElementById('cartModal').style.display = 'none';
+                checkoutCart();
+            });
+            
+            // 结算函数
+            function checkoutCart() {
+                let totalPrice = 0;
+                let orderSummaryHTML = '';
+                
+                shoppingCart.forEach(item => {
+                    orderSummaryHTML += `
+                        <div class="order-detail"><strong>产品:</strong> ${item.name}</div>
+                        <div class="order-detail"><strong>配置:</strong> ${item.configuration}</div>
+                        <div class="order-detail"><strong>价格:</strong> ${item.price}元</div>
+                        <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+                    `;
+                    totalPrice += item.price;
+                });
+                
+                orderSummaryHTML += `<div class="order-detail" style="font-weight: bold; margin-top: 1rem;"><strong>总价:</strong> ${totalPrice.toFixed(2)}元</div>`;
+                
+                document.getElementById('orderSummary').innerHTML = orderSummaryHTML;
+                document.getElementById('checkoutModal').style.display = 'flex';
+                
+                // 存储当前订单信息
+                window.currentOrder = {
+                    products: shoppingCart,
+                    totalPrice: totalPrice
+                };
+            }
+            
+            // 关闭结算弹窗
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('checkoutModal').style.display = 'none';
+            });
+            
+            // 确认订单
+            document.getElementById('confirmOrder').addEventListener('click', function() {
+                const email = document.getElementById('customerEmail').value;
+                if (!email) {
+                    alert('请输入邮箱地址');
+                    return;
+                }
+                
+                const orderNumber = generateOrderNumber();
+                
+                // 发送邮件
+                sendEmail({
+                    email: email,
+                    orderNumber: orderNumber,
+                    product: '购物车多商品订单',
+                    configuration: window.currentOrder.products.map(p => `${p.name}: ${p.configuration}`).join('; '),
+                    totalPrice: window.currentOrder.totalPrice
+                });
+                
+                // 显示支付页面
+                document.getElementById('checkoutModal').style.display = 'none';
+                document.getElementById('paymentPage').style.display = 'flex';
+                document.getElementById('paymentOrderNumber').textContent = `订单号: ${orderNumber}`;
+                
+                // 清空购物车
+                shoppingCart = [];
+                updateCartDisplay();
+            });
+            
+            // 返回首页
+            document.getElementById('backToHome').addEventListener('click', function() {
+                document.getElementById('paymentPage').style.display = 'none';
+                // 清空邮箱输入
+                document.getElementById('customerEmail').value = '';
+            });
+            
+            // 语言切换
+            document.getElementById('languageToggle').addEventListener('click', toggleLanguage);
+        });
+    </script>
+</body>
+</html>
